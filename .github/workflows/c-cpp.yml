@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: install
+        run: sudo apt update && sudo apt install g++ cmake libboost-program-options-dev libyaml-cpp-dev clang-tidy clang-format python3-matplotlib
+      - name: install pytest
+        run: pip3 install pytest
+      - name: install pybind
+        run: git clone https://github.com/pybind/pybind11.git && cd pybind11 && git checkout v2.5.0 && mkdir build && cd build && cmake .. && 	make -j8 &&	sudo make install
+      - name: configure
+        run: mkdir build && cd build && cmake ..
+      - name: make
+        run: cd build && make -j8 && make install
